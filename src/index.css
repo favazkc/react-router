@@ -1,0 +1,4 @@
+:root { font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; }
+a { text-decoration: none; }
+a:hover { text-decoration: underline; }
+button { margin-top: 8px; padding: 6px 10px; }

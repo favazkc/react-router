@@ -1,0 +1,5 @@
+[
+  { "id": "p-101", "name": "Eco Bottle", "price": 599, "stock": 42, "desc": "Steel, 750ml" },
+  { "id": "p-102", "name": "Smart LED", "price": 1299, "stock": 13, "desc": "9W Wi-Fi bulb" },
+  { "id": "p-103", "name": "Travel Backpack", "price": 2599, "stock": 7, "desc": "35L, water resistant" }
+]
