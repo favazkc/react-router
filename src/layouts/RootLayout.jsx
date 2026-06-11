@@ -1,13 +1,13 @@
 import { NavLink, Outlet, ScrollRestoration } from "react-router-dom";
- import Header from "../components/Header";
+import Header from "../components/Header";
  
 export async function loader() {
-   return null;
- }
+  return null;
+}
  
 export default function RootLayout() {
-   const active = ({ isActive }) =>
- 	isActive ? "text-blue-600 font-semibold" : "text-gray-700";
+  const active = ({ isActive }) =>
+	isActive ? "text-blue-600 font-semibold" : "text-gray-700";
  
   return (
 <div>
@@ -15,23 +15,23 @@ export default function RootLayout() {
  
   	<nav style={{ display: "flex", gap: 12, padding: 16 }}>
 <NavLink to="/" end>
-       	Home
+      	Home
 </NavLink>
  
     	<NavLink to="/about">
-       	About
+      	About
 </NavLink>
  
     	<NavLink to="/products">
-       	Products
+      	Products
 </NavLink>
  
     	<NavLink to="/contact">
-       	Contact
+      	Contact
 </NavLink>
  
     	<NavLink to="/dashboard">
-       	Dashboard
+      	Dashboard
 </NavLink>
 </nav>
  
@@ -41,5 +41,5 @@ export default function RootLayout() {
  
   	<ScrollRestoration />
 </div>
-   );
- }
+  );
+}
