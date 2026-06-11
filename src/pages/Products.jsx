@@ -1,89 +1,47 @@
-import { Link, useLoaderData, Await } from "react-router-dom";
-import { Suspense, useMemo, useState } from "react";
+import { useLoaderData } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { useState, useMemo } from "react";
 import Filters from "../components/Filters";
 import ProductList from "../components/ProductList";
+import { selectFavoritesSet, selectCartCount } from "../store/selectors";
 
+// This is the loader function that your router.jsx is looking for
 export async function loader() {
-  const listPromise = fetch("/data/products.json").then(r => {
-    if (!r.ok) throw new Response("Failed to load products", { status: 500 });
-    return r.json();
-  });
-  // Simply return the object containing the promise
-  return { products: listPromise };
+  const res = await fetch("/data/products.json");
+  if (!res.ok) {
+    throw new Response("Failed to load products", { status: 500 });
+  }
+  return res.json();
 }
 
 export default function Products() {
-  const data = useLoaderData();
-
-  // LIFTED STATE (page-level):
-  // favorites: Set of product ids
-  const [favoriteIds, setFavoriteIds] = useState(() => new Set());
-  // cart: Map<productId, qty>
-  const [cart, setCart] = useState(() => new Map());
-  // filters: query + minPrice
+  // Data is fetched before the component mounts by the route loader
+  const products = useLoaderData(); 
+  
   const [filters, setFilters] = useState({ query: "", minPrice: 0 });
+  const favorites = useSelector(selectFavoritesSet);
+  const cartCount = useSelector(selectCartCount);
 
-  const cartCount = [...cart.values()].reduce((a, b) => a + b, 0);
-
-  function handleToggleFavorite(id) {
-    setFavoriteIds(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
-    });
-  }
-
-  function handleAddToCart(id) {
-    setCart(prev => {
-      const next = new Map(prev);
-      next.set(id, (next.get(id) || 0) + 1);
-      return next;
-    });
-  }
-
-  function handleFiltersChange(nextFilters) {
-    setFilters(nextFilters);
-  }
-
-  // filter the products according to page-level state
-  function applyFilters(list) {
+  const filtered = useMemo(() => {
     const q = filters.query.trim().toLowerCase();
     const minP = Number(filters.minPrice) || 0;
-    return list.filter(p => {
+    return products.filter(p => {
       const matchesQ = q ? p.name.toLowerCase().includes(q) : true;
       const matchesP = p.price >= minP;
       return matchesQ && matchesP;
     });
-  }
+  }, [products, filters]);
 
   return (
     <div>
-      {/* Show page-level derived info */}
       <p style={{ marginTop: 0 }}>
-        Favorites: <strong>{favoriteIds.size}</strong> &nbsp;|&nbsp; Cart items: <strong>{cartCount}</strong>
+        Favorites: <strong>{favorites.size}</strong> &nbsp;|&nbsp; Cart items: <strong>{cartCount}</strong>
       </p>
 
-      <Filters
-        initialQuery=""
-        initialMinPrice={0}
-        onChange={handleFiltersChange}
-      />
+      <Filters initialQuery="" initialMinPrice={0} onChange={setFilters} />
 
-      <Suspense fallback={<p>Loading products…</p>}>
-        <Await resolve={data.products}>
-          {(products) => {
-            const filtered = applyFilters(products);
-            return (
-              <ProductList
-                products={filtered}
-                favoriteIds={favoriteIds}
-                onToggleFavorite={handleToggleFavorite}
-                onAddToCart={handleAddToCart}
-              />
-            );
-          }}
-        </Await>
-      </Suspense>
+      {/* Since the loader handles the fetching, you don't need 'loading' or 'failed' state here */}
+      <ProductList products={filtered} />
     </div>
   );
 }

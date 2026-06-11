@@ -1,19 +1,20 @@
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { clearFavorites } from "../store/favoritesSlice";
 
-/**
- * A controlled filter panel.
- * Props:
- *  - initialQuery: string
- *  - initialMinPrice: number
- *  - onChange({ query, minPrice }): callback fired when user updates filters
+/** Props:
+ *  - initialQuery?: string
+ *  - initialMinPrice?: number
+ *  - onChange({ query, minPrice })
  */
 export default function Filters({ initialQuery = "", initialMinPrice = 0, onChange }) {
   const [query, setQuery] = useState(initialQuery);
   const [minPrice, setMinPrice] = useState(initialMinPrice);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     onChange?.({ query, minPrice });
-  }, [query, minPrice]); // fire when local inputs change
+  }, [query, minPrice, onChange]);
 
   return (
     <section style={{ padding: 12, border: "1px solid #eee", borderRadius: 8, marginBottom: 16 }}>
@@ -21,11 +22,7 @@ export default function Filters({ initialQuery = "", initialMinPrice = 0, onChan
       <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
         <label>
           Search:&nbsp;
-          <input
-            value={query}
-            onChange={e => setQuery(e.target.value)}
-            placeholder="name contains..."
-          />
+          <input value={query} onChange={e => setQuery(e.target.value)} placeholder="name contains..." />
         </label>
         <label>
           Min Price:&nbsp;
@@ -37,6 +34,7 @@ export default function Filters({ initialQuery = "", initialMinPrice = 0, onChan
             style={{ width: 100 }}
           />
         </label>
+        <button onClick={() => dispatch(clearFavorites())}>Clear Favorites</button>
       </div>
     </section>
   );

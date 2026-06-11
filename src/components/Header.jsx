@@ -1,6 +1,9 @@
 import CartBadge from "./CartBadge";
+import { useSelector } from "react-redux";
+import { selectCartCount } from "../store/selectors";
 
-export default function Header({ cartCount = 0 }) {
+export default function Header() {
+  const cartCount = useSelector(selectCartCount);
   return (
     <header style={{ padding: 16, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
       <div>

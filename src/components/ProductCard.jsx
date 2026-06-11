@@ -1,12 +1,15 @@
-/**
- * A dumb presentational card.
- * Props:
+import { useDispatch, useSelector } from "react-redux";
+import { addToCart } from "../store/cartSlice";
+import { toggleFavorite } from "../store/favoritesSlice";
+import { selectIsFavorite } from "../store/selectors";
+
+/** Props:
  *  - product: { id, name, price, stock, desc }
- *  - isFavorite: boolean
- *  - onToggleFavorite(id)
- *  - onAddToCart(id)
  */
-export default function ProductCard({ product, isFavorite, onToggleFavorite, onAddToCart }) {
+export default function ProductCard({ product }) {
+  const dispatch = useDispatch();
+  const isFavorite = useSelector(selectIsFavorite(product.id));
+
   return (
     <article
       style={{
@@ -24,8 +27,8 @@ export default function ProductCard({ product, isFavorite, onToggleFavorite, onA
       </p>
 
       <div style={{ display: "flex", gap: 8 }}>
-        <button onClick={() => onAddToCart?.(product.id)}>Add to Cart</button>
-        <button onClick={() => onToggleFavorite?.(product.id)}>
+        <button onClick={() => dispatch(addToCart(product.id))}>Add to Cart</button>
+        <button onClick={() => dispatch(toggleFavorite(product.id))}>
           {isFavorite ? "★ Favorited" : "☆ Favorite"}
         </button>
       </div>

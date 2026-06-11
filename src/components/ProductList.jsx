@@ -1,15 +1,9 @@
 import ProductCard from "./ProductCard";
 
-/**
- * Props:
- *  - products: array of product objects to render
- *  - favoriteIds: Set or array of ids
- *  - onToggleFavorite(id)
- *  - onAddToCart(id)
+/** Props:
+ *  - products: array of product objects
  */
-export default function ProductList({ products, favoriteIds = new Set(), onToggleFavorite, onAddToCart }) {
-  const favSet = favoriteIds instanceof Set ? favoriteIds : new Set(favoriteIds);
-
+export default function ProductList({ products }) {
   return (
     <section
       style={{
@@ -19,13 +13,7 @@ export default function ProductList({ products, favoriteIds = new Set(), onToggl
       }}
     >
       {products.map(p => (
-        <ProductCard
-          key={p.id}
-          product={p}
-          isFavorite={favSet.has(p.id)}
-          onToggleFavorite={onToggleFavorite}
-          onAddToCart={onAddToCart}
-        />
+        <ProductCard key={p.id} product={p} />
       ))}
     </section>
   );
